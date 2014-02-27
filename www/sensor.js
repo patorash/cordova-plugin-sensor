@@ -30,9 +30,10 @@ function AndroidSensor(){
     self.getAll(function(results) {
       self.available = true;
       for(result in results) {
-        this.sensors[result.type] = result;
+        self.sensors[result.type] = result;
       }
-      console.log(this.sensors.toString());
+      console.log(self.sensors.toString());
+      channel.onCordovaInfoReady.fire();
     },function(e) {
         self.available = false;
         console.log("[ERROR] Error initiailzing Cordova: " + e);
