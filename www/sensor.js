@@ -29,9 +29,9 @@ function AndroidSensor(){
   channel.onCordovaReady.subscribe(function(){
     self.getAll(function(results) {
       self.available = true;
-      for(result in results) {
+      results.forEach(function(result) {
         self.sensors[result.type] = result;
-      }
+      });
       console.log(self.sensors.toString());
       channel.onCordovaInfoReady.fire();
     },function(e) {
