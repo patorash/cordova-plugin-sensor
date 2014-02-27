@@ -7,7 +7,7 @@
     <name>Sensor</name>
     <description>Cordova Sensor Plugin</description>
     <license>Apache 2.0</license>
-    <keywords>cordova,sensor,proximity</keywords>
+    <keywords>cordova,sensor</keywords>
     <repo>https://github.com/patorash/cordova-plugin-sensor.git</repo>
     <issue>https://github.com/patorash/cordova-plugin-sensor/issues</issue>
 
@@ -18,10 +18,10 @@
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Sensor" >
-                <param name="android-package" value="com.okolabo.cordova.sensor.Sensor"/>
+            <feature name="AndroidSensor" >
+                <param name="android-package" value="com.okolabo.cordova.sensor.AndroidSensor"/>
             </feature>
         </config-file>
-        <source-file src="src/android/Sensor.java" target-dir="src/com/okolabo/cordova/sensor" />
+        <source-file src="src/android/AndroidSensor.java" target-dir="src/com/okolabo/cordova/sensor" />
     </platform>
 </plugin>

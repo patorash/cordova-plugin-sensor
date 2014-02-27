@@ -11,7 +11,7 @@ import android.hardware.*;
 import java.util.*;
 
 
-public class Sensor extends CordovaPlugin implements SensorEventListener{
+public class AndroidSensor extends CordovaPlugin implements SensorEventListener{
 
     public static final String GET_ALL_SENSORS = "poolAllSensors";
     public static final String GET_SPEC_SENSORS = "nativeAction";
@@ -26,53 +26,36 @@ public class Sensor extends CordovaPlugin implements SensorEventListener{
         Context ctx = this.cordova.getActivity();
         mSensorManager = (SensorManager) ctx.getSystemService(Context.SENSOR_SERVICE);
 
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE), SensorManager.SENSOR_DELAY_NORMAL);
+//        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE), SensorManager.SENSOR_DELAY_NORMAL);
+//
+//
+//		while(mPressure == 0) {
+//			if (mPressure > 0) {
+//				mSensorManager.unregisterListener(AndroidSensor.this);
+//        		JSONObject result = new JSONObject();
+//        		try {
+//					result.put("pressure", mPressure);
+//            		callbackContext.success(result);
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//        return true;
         
-//        cordova.getThreadPool().execute(new Runnable(){
-//        	public void run(){
-//        		while(mPressure == 0) {
-//        			if (mPressure > 0) {
-//        				mSensorManager.unregisterListener(Sensormatic.this);
-//                		JSONObject result = new JSONObject();
-//                		try {
-//    						result.put("pressure", mPressure);
-//    	            		callbackContext.success(result);
-//    					} catch (JSONException e) {
-//    						e.printStackTrace();
-//    					}
-//        			}
-//        		}
-//        	}
-//        });
-		while(mPressure == 0) {
-			if (mPressure > 0) {
-				mSensorManager.unregisterListener(Sensormatic.this);
-        		JSONObject result = new JSONObject();
-        		try {
-					result.put("pressure", mPressure);
-            		callbackContext.success(result);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-        return true;
-        
-//        if (GET_ALL_SENSORS.equals(action)) {
-//
-//            JSONArray rtnJSON = poolAllSensors();
-//
-//            if (rtnJSON == null) {
-//        		return false;
-//            }
-//            callbackContext.success(rtnJSON);
-//            return true;
-//
-//        } else if (GET_SPEC_SENSORS.equals(action)) {
-//    		return false;
-//        } else {
-//    		return false;
-//        }
+        if (GET_ALL_SENSORS.equals(action)) {
+            JSONArray rtnJSON = poolAllSensors();
+            if (rtnJSON == null) {
+                return false;
+            }
+            callbackContext.success(rtnJSON);
+            return true;
+
+        } else if (GET_SPEC_SENSORS.equals(action)) {
+    		return false;
+        } else {
+    		return false;
+        }
     }
 
 //    @Override
@@ -113,7 +96,8 @@ public class Sensor extends CordovaPlugin implements SensorEventListener{
             try {
                 o.put("vendor", s.getVendor());
                 o.put("name", s.getName());
-                o.put("type", checkType(s.getType()));
+//                o.put("type", checkType(s.getType()));
+                o.put("type", s.getType());
                 o.put("version", s.getVersion());
                 o.put("maxRange", s.getMaximumRange());
                 //o.put( "minDelay",		s.getMinDelay() 		);

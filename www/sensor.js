@@ -1,5 +1,14 @@
-var Sensor = new(function () {
+var argscheck = require('cordova/argscheck'),
+  channel = require('cordova/channel'),
+  utils = require('cordova/utils'),
+  exec = require('cordova/exec'),
+  cordova = require('cordova');
 
+channel.createSticky('onCordovaInfoReady');
+// Tell cordova channel to wait on the CordovaInfoReady event
+channel.waitForInitialization('onCordovaInfoReady');
+
+function AndroidSensor(){
   this.sensor_type = {
     TYPE_ACCELEROMETER: 1,
     TYPE_AMBIENT_TEMPERATURE: 13,
@@ -13,48 +22,33 @@ var Sensor = new(function () {
     TYPE_RELATIVE_HUMIDITY: 12,
     TYPE_ROTATION_VECTOR: 11
   };
+  this.available = false;
+  this.sensors = [];
+  var self = this;
 
-  this.getSpecific = function (type, succ, fail) {
+  channel.onCordovaReady.subscribe(function(){
+    self.getAll(function(results) {
+      self.available = true;
+      for(result in results) {
+        this.sensors[result.type] = result;
+      }
+      console.log(this.sensors.toString());
+    },function(e) {
+        self.available = false;
+        console.log("[ERROR] Error initiailzing Cordova: " + e);
+    });
+  });
+}
 
-    /* Success Callback  */
-    function success(msg) {
-      succ(msg);
-    }
+AndroidSensor.prototype.getSpecific = function(type, successCallback, errorCallback) {
+  argscheck.checkArgs('fF', 'AndroidSensor.getSpecific', arguments);
+  exec(successCallback, errorCallback, "AndroidSensor", "getSpecific", [type]);
+}
 
-    /* Error/Failure Callback */
-    function failback(err) {
-      fail(err);
-    }
 
-    /* Execute the native code */
-    cordova.exec(function (msg) {
-        succ(msg);
-      },
+AndroidSensor.prototype.getAll = function(successCallback, errorCallback) {
+  argscheck.checkArgs('fF', 'AndroidSensor.getInfo', arguments);
+  exec(successCallback, errorCallback, "AndroidSensor", "poolAllSensors", []);
+}
 
-      function (err) {
-        fail(err);
-      }, "Sensor", "getSpecificSensor", [type]);
-  };
-
-  /* getAll() - get every sensor on the device */
-  this.getAll = function (succ, fail) {
-    /* Success Callback  */
-    function success(msg) {
-      succ(msg);
-    }
-
-    /* Error/Failure Callback */
-    function failback(err) {
-      fail(err);
-    }
-
-    /* Execute the native code */
-    cordova.exec(function (msg) {
-        succ(msg);
-      },
-
-      function (err) {
-        fail(err);
-      }, "Sensor", "poolAllSensors", []);
-  };
-})();
+module.exports = new AndroidSensor();
